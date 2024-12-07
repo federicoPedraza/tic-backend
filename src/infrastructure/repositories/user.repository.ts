@@ -14,6 +14,22 @@ export class UserRepository {
     return this.repository.findOne({ where: user });
   }
 
+  async find(user: Partial<User>): Promise<User[]> {
+    return this.repository.find({ where: user });
+  }
+
+  async findAllByIds(ids: string[]): Promise<User[]> {
+    return this.repository.createQueryBuilder().whereInIds(ids).getMany();
+  }
+
+  async update(user: Partial<User>): Promise<User> {
+    return this.repository.save(user);
+  }
+
+  async delete(user: Partial<User>): Promise<void> {
+    await this.repository.delete(user);
+  }
+
   async post(user: Partial<User>): Promise<User> {
     return this.repository.save(user);
   }

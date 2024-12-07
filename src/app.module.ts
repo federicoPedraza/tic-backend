@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthModule, CourseModule } from './infrastructure/modules';
+import { AuthModule, CourseModule, UserModule } from './infrastructure/modules';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './infrastructure/controllers';
@@ -18,6 +18,7 @@ import { AppController } from './infrastructure/controllers';
       synchronize: true,
     }),
     AuthModule,
+    UserModule,
     CourseModule,
   ],
   controllers: [AppController],

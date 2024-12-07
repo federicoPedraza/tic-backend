@@ -18,3 +18,8 @@ export class SignupDTO {
   @IsNotEmpty()
   username: string;
 }
+
+export class DisableUserDTO {
+  @IsNotEmpty()
+  targets: string[];
+}
