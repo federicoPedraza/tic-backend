@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { UserRole } from '../types';
 import { BaseEntity } from './base.entity';
+import { CourseParticipant } from './course-participants.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -18,4 +19,7 @@ export class User extends BaseEntity {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @OneToMany(() => CourseParticipant, (participant) => participant.user)
+  courseParticipants?: CourseParticipant[];
 }

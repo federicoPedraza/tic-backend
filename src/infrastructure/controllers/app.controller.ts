@@ -1,7 +1,7 @@
 import { Controller, Get, HttpStatus } from '@nestjs/common';
-import { GetTime } from './app.presentations';
 import { HttpResponse } from './base.response';
 import { GetTimeError } from 'src/application/exceptions';
+import { GetTime } from '../presentations';
 
 @Controller()
 export class AppController {

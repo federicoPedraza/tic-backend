@@ -7,7 +7,7 @@ import {
 } from 'src/application/use-cases/users';
 import { UserRepository } from '../repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Session, User } from 'src/domain/entities';
+import { User } from 'src/domain/entities';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from '../config/auth/local.strategy';
 import { JwtStrategy } from '../config/auth/jwt.stategy';
@@ -16,8 +16,8 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    PassportModule.register({ session: true }),
-    TypeOrmModule.forFeature([User, Session]),
+    PassportModule.register({ session: false }),
+    TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

@@ -12,15 +12,11 @@ import {
   SignUpUseCase,
 } from 'src/application/use-cases/users';
 import { HttpResponse } from './base.response';
-import {
-  HealthResponse,
-  LoginResponse,
-  SingupResponse,
-} from './auth.presentations';
 import { LocalAuthGuard } from '../config/auth/local.guard';
 import { User } from 'src/domain/entities';
 import { JwtGuard } from '../config/auth/jwt.guard';
 import { ReqUser } from '../config/decorators';
+import { HealthResponse, LoginResponse, SignupRespone } from '../presentations';
 
 @Controller('auth')
 export class AuthController {
@@ -42,7 +38,7 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signup(@Req() request: Request): Promise<HttpResponse<SingupResponse>> {
+  async signup(@Req() request: Request): Promise<HttpResponse<SignupRespone>> {
     const data = request.body;
 
     const user = await this.signupUseCase.execute(data);
@@ -52,6 +48,7 @@ export class AuthController {
       message: 'Signed up successfully',
       data: {
         username: user.username,
+        id: user.id,
         access_token: log.access_token,
       },
       status: HttpStatus.CREATED,
@@ -65,6 +62,7 @@ export class AuthController {
       message: 'Logged in successfully',
       data: {
         email: user.email,
+        id: user.id,
       },
       status: HttpStatus.OK,
     };

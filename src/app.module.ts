@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './infrastructure/modules';
+import { AuthModule, CourseModule } from './infrastructure/modules';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Session } from './domain/entities';
 import { AppController } from './infrastructure/controllers';
 
 @Module({
@@ -18,8 +17,8 @@ import { AppController } from './infrastructure/controllers';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Session]),
     AuthModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [],
