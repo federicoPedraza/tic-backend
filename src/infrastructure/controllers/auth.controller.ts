@@ -4,55 +4,69 @@ import {
   HttpStatus,
   Post,
   Req,
-  Res,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { SignUpUseCase } from 'src/application/use-cases/users';
+import { Request } from 'express';
+import {
+  CreateTokenUseCase,
+  SignUpUseCase,
+} from 'src/application/use-cases/users';
 import { HttpResponse } from './base.response';
-import { LoginResponse } from './auth.responses';
+import {
+  HealthResponse,
+  LoginResponse,
+  SingupResponse,
+} from './auth.presentations';
 import { LocalAuthGuard } from '../config/auth/local.guard';
-import { AuthenticatedGuard } from '../config/auth/authenticated.guard';
+import { User } from 'src/domain/entities';
+import { JwtGuard } from '../config/auth/jwt.guard';
+import { ReqUser } from '../config/decorators';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly signupUseCase: SignUpUseCase) {}
+  constructor(
+    private readonly signupUseCase: SignUpUseCase,
+    private readonly createTokenUseCase: CreateTokenUseCase,
+  ) {}
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@Req() request: Request): Promise<HttpResponse<LoginResponse>> {
-    if (!request.isAuthenticated())
-      throw new UnauthorizedException('Login failed');
+    const result = await this.createTokenUseCase.execute(request.user as User);
 
     return {
       message: 'Logged in successfully',
-      data: request.user as any,
+      data: result,
       status: HttpStatus.ACCEPTED,
     };
   }
 
   @Post('signup')
-  async signup(@Req() request: Request, @Res() response: Response) {
+  async signup(@Req() request: Request): Promise<HttpResponse<SingupResponse>> {
     const data = request.body;
 
-    const token = await this.signupUseCase.execute(data);
+    const user = await this.signupUseCase.execute(data);
+    const log = await this.createTokenUseCase.execute(user);
 
-    response.send(token);
-  }
-
-  @Get('logout')
-  @UseGuards(AuthenticatedGuard)
-  async logout(@Req() request: Request, @Res() response: Response) {
-    request.session.destroy((error) => {
-      if (error) throw error;
-      response.send('Logged out');
-    });
+    return {
+      message: 'Signed up successfully',
+      data: {
+        username: user.username,
+        access_token: log.access_token,
+      },
+      status: HttpStatus.CREATED,
+    };
   }
 
   @Get('health')
-  @UseGuards(AuthenticatedGuard)
-  async health(@Res() response: Response) {
-    response.send('Logged in');
+  @UseGuards(JwtGuard)
+  async health(@ReqUser() user: User): Promise<HttpResponse<HealthResponse>> {
+    return {
+      message: 'Logged in successfully',
+      data: {
+        email: user.email,
+      },
+      status: HttpStatus.OK,
+    };
   }
 }

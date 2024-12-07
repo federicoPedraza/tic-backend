@@ -1,7 +1,7 @@
 import { UserRepository } from 'src/infrastructure/repositories';
 import { LoginDTO } from 'src/application/dtos';
 import { Inject } from '@nestjs/common';
-import { InvalidPassword } from 'src/domain/exceptions';
+import { InvalidPasswordOrEmail } from 'src/domain/exceptions';
 import { User } from 'src/domain/entities';
 
 export class LoginUseCase {
@@ -9,7 +9,7 @@ export class LoginUseCase {
 
   async execute({ email, password }: LoginDTO): Promise<User> {
     const user = await this.userRepository.validate(email, password);
-    if (!user) throw new InvalidPassword();
+    if (!user) throw new InvalidPasswordOrEmail();
 
     return user;
   }

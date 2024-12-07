@@ -3,6 +3,7 @@ import { AuthModule } from './infrastructure/modules';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Session } from './domain/entities';
+import { AppController } from './infrastructure/controllers';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Session } from './domain/entities';
     TypeOrmModule.forFeature([Session]),
     AuthModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
