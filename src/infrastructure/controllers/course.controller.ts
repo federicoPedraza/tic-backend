@@ -14,9 +14,11 @@ import {
   JoinCourseUseCase,
 } from 'src/application/use-cases/courses';
 import { CreateCourseResponse, GetCoursesResponse } from '../presentations';
-import { ReqUser } from '../config/decorators';
+import { ReqUser, Roles } from '../config/decorators';
 import { User } from 'src/domain/entities';
 import { GetCoursesDTO, JoinCourseDTO } from 'src/application/dtos';
+import { RolesGuard } from '../config/auth/role.guard';
+import { UserRole } from 'src/domain/types';
 
 @Controller('courses')
 export class CourseController {
@@ -27,7 +29,8 @@ export class CourseController {
   ) {}
 
   @Post('create')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   async create(@Body() dto): Promise<HttpResponse<CreateCourseResponse>> {
     const course = await this.createCourseUseCase.execute(dto);
 

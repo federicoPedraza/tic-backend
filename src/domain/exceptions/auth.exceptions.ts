@@ -38,3 +38,16 @@ export class UserAlreadyExists extends HttpException {
     );
   }
 }
+
+export class ForbiddenResource extends HttpException {
+  constructor() {
+    super(
+      {
+        message: 'Forbidden resource',
+        status: HttpStatus.FORBIDDEN,
+        code: 'FORBIDDEN_RESOURCE',
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+}
