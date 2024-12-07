@@ -9,7 +9,18 @@ export interface GetCoursesResponse {
   filters: any;
 }
 
-export interface GetCoursesResponseResult {
+export interface GetCoursesResponseResult extends Course {
+  participantCount: number;
+}
+
+export interface GetCourseDetailsResponse {
   data: Partial<Course>;
+  prices: GetCourseDetailsPrice[];
   participants: number;
+  isParticipant: boolean;
+}
+
+export interface GetCourseDetailsPrice {
+  value: number;
+  currency: string;
 }

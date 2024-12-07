@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -10,11 +11,16 @@ import { HttpResponse } from './base.response';
 import { JwtGuard } from '../config/auth/jwt.guard';
 import {
   CreateCourseUseCase,
+  GetCourseDetailsUseCase,
   GetCoursesUseCase,
   JoinCourseUseCase,
 } from 'src/application/use-cases/courses';
-import { CreateCourseResponse, GetCoursesResponse } from '../presentations';
-import { ReqUser, Roles } from '../config/decorators';
+import {
+  CreateCourseResponse,
+  GetCourseDetailsResponse,
+  GetCoursesResponse,
+} from '../presentations';
+import { Public, ReqUser, Roles } from '../config/decorators';
 import { User } from 'src/domain/entities';
 import { GetCoursesDTO, JoinCourseDTO } from 'src/application/dtos';
 import { RolesGuard } from '../config/auth/role.guard';
@@ -25,6 +31,7 @@ export class CourseController {
   constructor(
     private readonly createCourseUseCase: CreateCourseUseCase,
     private readonly getCoursesUseCase: GetCoursesUseCase,
+    private readonly getCourseDetilsUseCase: GetCourseDetailsUseCase,
     private readonly joinCourseUseCase: JoinCourseUseCase,
   ) {}
 
@@ -44,6 +51,8 @@ export class CourseController {
   }
 
   @Get('list')
+  @UseGuards(JwtGuard)
+  @Public()
   async get(
     @Body() dto: GetCoursesDTO,
     @ReqUser() user?: User,
@@ -68,6 +77,22 @@ export class CourseController {
     return {
       message: 'Course joined successfuly',
       data: undefined,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get(':id')
+  @UseGuards(JwtGuard)
+  @Public()
+  async details(
+    @Param('id') courseId: string,
+    @ReqUser() user: User,
+  ): Promise<HttpResponse<GetCourseDetailsResponse>> {
+    const details = await this.getCourseDetilsUseCase.execute(courseId, user);
+
+    return {
+      message: 'Course details fetched successfuly',
+      data: details,
       status: HttpStatus.OK,
     };
   }

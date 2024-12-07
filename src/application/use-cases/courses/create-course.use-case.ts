@@ -21,7 +21,9 @@ export class CreateCourseUseCase {
       description: dto.description,
       starts_at: start,
       ends_at: end,
+      is_public: dto.isPublic || false,
       participants: [],
+      prices: [],
     };
 
     return await this.courseRepository.post(model);

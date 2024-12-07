@@ -9,12 +9,18 @@ export class CourseRepository {
     @InjectRepository(Course) private readonly repository: Repository<Course>,
   ) {}
 
-  async get(course: Partial<Course>): Promise<Course | undefined> {
-    return this.repository.findOne({ where: course });
+  async get(
+    course: Partial<Course>,
+    options?: any,
+  ): Promise<Course | undefined> {
+    return this.repository.findOne({ where: course, ...options });
   }
 
   async getAll(filters: Partial<Course>, options?: any): Promise<Course[]> {
-    return this.repository.find({ where: filters, ...options });
+    return this.repository.find({
+      where: filters,
+      ...options,
+    });
   }
 
   async post(course: Partial<Course>): Promise<Course> {

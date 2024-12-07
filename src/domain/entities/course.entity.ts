@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { CourseParticipant } from './course-participants.entity';
+import { CoursePrice } from './course-prices.entity';
 
 @Entity('courses')
 export class Course extends BaseEntity {
@@ -16,6 +17,12 @@ export class Course extends BaseEntity {
   @Column({ type: 'date', nullable: true })
   ends_at: Date;
 
+  @Column({ type: 'boolean', default: false })
+  is_public: boolean;
+
   @OneToMany(() => CourseParticipant, (participant) => participant.course)
   participants: CourseParticipant[];
+
+  @OneToMany(() => CoursePrice, (price) => price.course)
+  prices: CoursePrice[];
 }

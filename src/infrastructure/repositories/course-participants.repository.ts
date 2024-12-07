@@ -30,6 +30,19 @@ export class CourseParticipantRepository {
     });
   }
 
+  async findParticipantsByUser(userId: string): Promise<CourseParticipant[]> {
+    return this.repository.find({
+      where: {
+        user: { id: userId },
+      },
+      relations: ['user', 'course'],
+    });
+  }
+
+  async findParticipantsCountByCourse(courseId: string): Promise<number> {
+    return this.repository.count({ where: { course: { id: courseId } } });
+  }
+
   async getAll(
     filters: Partial<CourseParticipant>,
   ): Promise<CourseParticipant[]> {
